@@ -19,6 +19,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:authorities="de.selfmade4u.decentralized_storage.provider"
+            android:name=".provider.DecentralizedContentProvider"
+            android:readPermission="de.selfmade4u.decentralized_storage.provider.READ_PROVIDER"
+            android:writePermission="de.selfmade4u.decentralized_storage.provider.WRITE_PROVIDER"
+            android:enabled="true"
+            android:exported="true"
+            android:syncable="true"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:label="Decentralized Storage Provider"
+            >
+
+        </provider>
     </application>
 
 </manifest>
