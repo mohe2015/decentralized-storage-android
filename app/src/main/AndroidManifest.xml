@@ -20,17 +20,17 @@
             </intent-filter>
         </activity>
         <provider
-            android:authorities="de.selfmade4u.decentralized_storage.provider"
             android:name=".provider.DecentralizedContentProvider"
-            android:readPermission="de.selfmade4u.decentralized_storage.provider.READ_PROVIDER"
-            android:writePermission="de.selfmade4u.decentralized_storage.provider.WRITE_PROVIDER"
-            android:enabled="true"
+            android:authorities="de.selfmade4u.decentralized_storage.documents"
+            android:grantUriPermissions="true"
             android:exported="true"
-            android:syncable="true"
+            android:permission="android.permission.MANAGE_DOCUMENTS"
             android:icon="@drawable/ic_launcher_foreground"
             android:label="Decentralized Storage Provider"
             >
-
+            <intent-filter>
+                <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
+            </intent-filter>
         </provider>
     </application>
 
