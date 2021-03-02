@@ -1,6 +1,7 @@
 package de.selfmade4u.de.decentralized_storage
 
 import android.os.Bundle
+import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.text.style.TextAlign
@@ -39,7 +41,8 @@ fun Greeting(name: String) {
 fun MessageList(messages: List<String>) {
     Column(Modifier.fillMaxWidth())  {
         messages.forEach { message ->
-            Text(text = message, textAlign = TextAlign.Center)
+            Text(message, textAlign = TextAlign.Center,
+                    modifier = Modifier.align(alignment = Alignment.CenterHorizontally))
         }
     }
 }
