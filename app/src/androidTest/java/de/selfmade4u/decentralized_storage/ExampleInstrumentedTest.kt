@@ -1,4 +1,4 @@
-package de.selfmade4u.de.decentralized_storage
+package de.selfmade4u.decentralized_storage
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("de.selfmade4u.de.decentralized_storage", appContext.packageName)
+        assertEquals("de.selfmade4u.decentralized_storage", appContext.packageName)
     }
 }

@@ -1,4 +1,4 @@
-package de.selfmade4u.de.decentralized_storage.provider
+package de.selfmade4u.decentralized_storage.provider
 
 import android.database.Cursor
 import android.database.MatrixCursor
@@ -7,7 +7,7 @@ import android.os.ParcelFileDescriptor
 import android.provider.DocumentsContract
 import android.provider.DocumentsContract.Root.FLAG_SUPPORTS_RECENTS
 import android.provider.DocumentsProvider
-import de.selfmade4u.de.decentralized_storage.R
+import de.selfmade4u.decentralized_storage.R
 
 // https://developer.android.com/reference/android/provider/DocumentsProvider
 // https://developer.android.com/guide/topics/providers/create-document-provider
@@ -51,7 +51,7 @@ class DecentralizedContentProvider : DocumentsProvider() {
         // It's possible to have multiple roots (e.g. for multiple accounts in the
         // same app) -- just add multiple cursor rows.
         result.newRow().apply {
-                        // FLAG_SUPPORTS_CREATE means at least one directory under the root supports
+            // FLAG_SUPPORTS_CREATE means at least one directory under the root supports
             // creating documents. FLAG_SUPPORTS_RECENTS means your application's most
             // recently used documents will show up in the "Recents" category.
             // FLAG_SUPPORTS_SEARCH allows users to search all documents the application

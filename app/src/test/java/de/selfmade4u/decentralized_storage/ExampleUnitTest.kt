@@ -1,4 +1,4 @@
-package de.selfmade4u.de.decentralized_storage
+package de.selfmade4u.decentralized_storage
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package de.selfmade4u.de.decentralized_storage.ui.theme
+package de.selfmade4u.decentralized_storage.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
