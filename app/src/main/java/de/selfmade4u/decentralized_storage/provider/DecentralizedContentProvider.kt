@@ -8,6 +8,7 @@ import android.provider.DocumentsContract
 import android.provider.DocumentsProvider
 import de.selfmade4u.decentralized_storage.R
 import java.io.File
+import java.lang.UnsupportedOperationException
 
 // https://developer.android.com/reference/android/provider/DocumentsProvider
 // https://developer.android.com/guide/topics/providers/create-document-provider
@@ -160,11 +161,13 @@ class DecentralizedContentProvider : DocumentsProvider() {
             // shares.
             add(
                 DocumentsContract.Document.COLUMN_FLAGS,
-                DocumentsContract.Document.FLAG_SUPPORTS_DELETE
+                DocumentsContract.Document.FLAG_SUPPORTS_DELETE or DocumentsContract.Document.FLAG_DIR_SUPPORTS_CREATE
             )
 
             // This document id cannot change after it's shared.
             add(DocumentsContract.Document.COLUMN_DOCUMENT_ID, docId ?: getDocIdForFile(file))
+
+            add(DocumentsContract.Document.COLUMN_DISPLAY_NAME,file ?: getFileForDocId(docId).name);
 
             // The child MIME types are used to filter the roots and only present to the
             // user those roots that contain the desired type somewhere in their file hierarchy.
@@ -195,6 +198,20 @@ class DecentralizedContentProvider : DocumentsProvider() {
         // Create a cursor with the requested projection, or the default projection.
         return MatrixCursor(resolveDocumentProjection(projection)).apply {
             includeFile(this, documentId, null)
+        }
+    }
+
+    override fun createDocument(
+        parentDocumentId: String?,
+        mimeType: String?,
+        displayName: String?
+    ): String {
+        if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+            val file = File(getFileForDocId(parentDocumentId), displayName!!);
+            file.mkdir()
+            return getDocIdForFile(file)!!
+        } else {
+            throw UnsupportedOperationException("Create not supported")
         }
     }
 
