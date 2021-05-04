@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Decentralized Storage</string>
+    <string name="root_summary">Test root summary</string>
+    <string name="title">test colum title</string>
 </resources>

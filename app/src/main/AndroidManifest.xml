@@ -22,7 +22,7 @@
         </activity>
         <provider
             android:name="de.selfmade4u.decentralized_storage.provider.DecentralizedContentProvider"
-            android:authorities="de.selfmade4u.decentralized_storage"
+            android:authorities="de.selfmade4u.decentralized_storage.documents"
             android:exported="true"
             android:grantUriPermissions="true"
             android:permission="android.permission.MANAGE_DOCUMENTS"
