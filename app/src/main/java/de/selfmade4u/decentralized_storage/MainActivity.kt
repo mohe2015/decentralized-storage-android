@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // update roots
         val rootsUri: Uri = DocumentsContract.buildRootsUri(BuildConfig.DOCUMENTS_AUTHORITY)
         this.contentResolver.notifyChange(rootsUri, null)
     }
