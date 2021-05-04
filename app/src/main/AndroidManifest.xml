@@ -8,9 +8,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DecentralizedStorage"
-        android:fullBackupContent="">
+        android:allowBackup="true"
+        android:fullBackupContent="true">
         <activity
-            android:name=".MainActivity"
+            android:name="de.selfmade4u.decentralized_storage.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.DecentralizedStorage.NoActionBar"
             android:exported="true">
@@ -21,10 +22,11 @@
         </activity>
         <provider
             android:name="de.selfmade4u.decentralized_storage.provider.DecentralizedContentProvider"
-            android:authorities="de.selfmade4u.decentralized_storage.documents"
-            android:grantUriPermissions="true"
+            android:authorities="de.selfmade4u.decentralized_storage"
             android:exported="true"
+            android:grantUriPermissions="true"
             android:permission="android.permission.MANAGE_DOCUMENTS"
+            android:enabled="true"
             android:icon="@drawable/ic_launcher_foreground"
             android:label="Decentralized Storage Provider"
             >
