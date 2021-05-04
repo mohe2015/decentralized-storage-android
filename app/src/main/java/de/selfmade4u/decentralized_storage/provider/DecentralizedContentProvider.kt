@@ -2,10 +2,12 @@ package de.selfmade4u.decentralized_storage.provider
 
 import android.database.Cursor
 import android.database.MatrixCursor
+import android.net.Uri
 import android.os.CancellationSignal
 import android.os.ParcelFileDescriptor
 import android.provider.DocumentsContract
 import android.provider.DocumentsProvider
+import de.selfmade4u.decentralized_storage.BuildConfig
 import de.selfmade4u.decentralized_storage.R
 import java.io.File
 import java.lang.UnsupportedOperationException
@@ -127,7 +129,9 @@ class DecentralizedContentProvider : DocumentsProvider() {
     }
 
     private fun getChildMimeTypes(file: File?): String? {
-        return if (file!!.isDirectory) DocumentsContract.Document.MIME_TYPE_DIR else "text/plain"
+        return null;
+
+        //return if (file!!.isDirectory) DocumentsContract.Document.MIME_TYPE_DIR else "text/plain"
     }
 
     private fun getDocIdForFile(file: File?): String? {
@@ -167,7 +171,7 @@ class DecentralizedContentProvider : DocumentsProvider() {
             // This document id cannot change after it's shared.
             add(DocumentsContract.Document.COLUMN_DOCUMENT_ID, docId ?: getDocIdForFile(file))
 
-            add(DocumentsContract.Document.COLUMN_DISPLAY_NAME,file ?: getFileForDocId(docId).name);
+            add(DocumentsContract.Document.COLUMN_DISPLAY_NAME, (file ?: getFileForDocId(docId)).name);
 
             // The child MIME types are used to filter the roots and only present to the
             // user those roots that contain the desired type somewhere in their file hierarchy.
@@ -209,7 +213,14 @@ class DecentralizedContentProvider : DocumentsProvider() {
         if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
             val file = File(getFileForDocId(parentDocumentId), displayName!!);
             file.mkdir()
-            return getDocIdForFile(file)!!
+
+            val docId = getDocIdForFile(file)!!
+
+            // TODO FIXME doesn't work
+            val rootsUri: Uri = DocumentsContract.buildChildDocumentsUri(BuildConfig.DOCUMENTS_AUTHORITY, parentDocumentId)
+            context!!.contentResolver.notifyChange(rootsUri, null)
+
+            return docId
         } else {
             throw UnsupportedOperationException("Create not supported")
         }
