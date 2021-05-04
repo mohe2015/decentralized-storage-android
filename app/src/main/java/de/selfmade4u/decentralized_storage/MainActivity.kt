@@ -1,6 +1,8 @@
 package de.selfmade4u.decentralized_storage
 
+import android.net.Uri
 import android.os.Bundle
+import android.provider.DocumentsContract
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
@@ -26,6 +28,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        val rootsUri: Uri = DocumentsContract.buildRootsUri(BuildConfig.DOCUMENTS_AUTHORITY)
+        this.contentResolver.notifyChange(rootsUri, null)
     }
 }
 
