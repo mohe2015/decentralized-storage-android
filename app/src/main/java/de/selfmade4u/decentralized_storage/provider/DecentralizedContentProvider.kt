@@ -129,9 +129,7 @@ class DecentralizedContentProvider : DocumentsProvider() {
     }
 
     private fun getChildMimeTypes(file: File?): String? {
-        return null;
-
-        //return if (file!!.isDirectory) DocumentsContract.Document.MIME_TYPE_DIR else "text/plain"
+        return if (file!!.isDirectory) DocumentsContract.Document.MIME_TYPE_DIR else null
     }
 
     private fun getDocIdForFile(file: File?): String? {
