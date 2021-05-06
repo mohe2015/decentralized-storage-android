@@ -87,40 +87,7 @@ class DecentralizedContentProvider : DocumentsProvider() {
 
             // The child MIME types are used to filter the roots and only present to the
             // user those roots that contain the desired type somewhere in their file hierarchy.
-            add(DocumentsContract.Root.COLUMN_MIME_TYPES, getChildMimeTypes(getBaseDir()))
-            add(DocumentsContract.Root.COLUMN_AVAILABLE_BYTES, 1000_000_000)
-            add(DocumentsContract.Root.COLUMN_ICON, R.mipmap.ic_launcher)
-        }
-
-        result.newRow().apply {
-            add(DocumentsContract.Root.COLUMN_ROOT_ID, ROOT+"2")
-
-            // You can provide an optional summary, which helps distinguish roots
-            // with the same title. You can also use this field for displaying an
-            // user account name.
-            add(DocumentsContract.Root.COLUMN_SUMMARY, context!!.getString(R.string.root_summary))
-
-            // FLAG_SUPPORTS_CREATE means at least one directory under the root supports
-            // creating documents. FLAG_SUPPORTS_RECENTS means your application's most
-            // recently used documents will show up in the "Recents" category.
-            // FLAG_SUPPORTS_SEARCH allows users to search all documents the application
-            // shares.
-            add(
-                DocumentsContract.Root.COLUMN_FLAGS,
-                DocumentsContract.Root.FLAG_SUPPORTS_CREATE or
-                        DocumentsContract.Root.FLAG_SUPPORTS_RECENTS or
-                        DocumentsContract.Root.FLAG_SUPPORTS_SEARCH
-            )
-
-            // COLUMN_TITLE is the root title (e.g. Gallery, Drive).
-            add(DocumentsContract.Root.COLUMN_TITLE, context!!.getString(R.string.title)+"2")
-
-            // This document id cannot change after it's shared.
-            add(DocumentsContract.Root.COLUMN_DOCUMENT_ID, getDocIdForFile(getBaseDir())+"2")
-
-            // The child MIME types are used to filter the roots and only present to the
-            // user those roots that contain the desired type somewhere in their file hierarchy.
-            add(DocumentsContract.Root.COLUMN_MIME_TYPES, getChildMimeTypes(getBaseDir()))
+            add(DocumentsContract.Root.COLUMN_MIME_TYPES, null) // allow all types of files in this root
             add(DocumentsContract.Root.COLUMN_AVAILABLE_BYTES, 1000_000_000)
             add(DocumentsContract.Root.COLUMN_ICON, R.mipmap.ic_launcher)
         }
@@ -220,7 +187,11 @@ class DecentralizedContentProvider : DocumentsProvider() {
 
             return docId
         } else {
-            throw UnsupportedOperationException("Create not supported")
+            val file = File(getFileForDocId(parentDocumentId), displayName!!);
+            file.createNewFile()
+
+            val docId = getDocIdForFile(file)!!
+            return docId
         }
     }
 
