@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "de.selfmade4u.decentralized_storage"
-        minSdkVersion 21
+        minSdkVersion 26 // TODO FIXME Android 8 which is too much
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"

@@ -4,12 +4,18 @@ import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
 import android.os.CancellationSignal
+import android.os.Handler
 import android.os.ParcelFileDescriptor
 import android.provider.DocumentsContract
 import android.provider.DocumentsProvider
+import android.util.Log
+import android.webkit.MimeTypeMap
+import androidx.core.net.toUri
 import de.selfmade4u.decentralized_storage.BuildConfig
 import de.selfmade4u.decentralized_storage.R
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 import java.lang.UnsupportedOperationException
 
 // https://developer.android.com/reference/android/provider/DocumentsProvider
@@ -17,6 +23,7 @@ import java.lang.UnsupportedOperationException
 // https://developer.android.com/guide/topics/providers/document-provider#overview
 class DecentralizedContentProvider : DocumentsProvider() {
     private val ROOT = "de.selfmade4u.decentralized_storage.documents.root"
+    private val TAG = "de.selfmade4u.decentralized_storage"
 
     private val DEFAULT_ROOT_PROJECTION: Array<String> = arrayOf(
         DocumentsContract.Root.COLUMN_ROOT_ID,
@@ -76,7 +83,8 @@ class DecentralizedContentProvider : DocumentsProvider() {
                 DocumentsContract.Root.COLUMN_FLAGS,
                 DocumentsContract.Root.FLAG_SUPPORTS_CREATE or
                         DocumentsContract.Root.FLAG_SUPPORTS_RECENTS or
-                        DocumentsContract.Root.FLAG_SUPPORTS_SEARCH
+                        DocumentsContract.Root.FLAG_SUPPORTS_SEARCH or
+                        DocumentsContract.Root.FLAG_SUPPORTS_IS_CHILD // for ACTION_OPEN_DOCUMENT_TREE
             )
 
             // COLUMN_TITLE is the root title (e.g. Gallery, Drive).
@@ -95,8 +103,16 @@ class DecentralizedContentProvider : DocumentsProvider() {
         return result
     }
 
+    override fun isChildDocument(parentDocumentId: String?, documentId: String?): Boolean {
+        val pn = getFileForDocId(parentDocumentId).toPath()
+        val cn = getFileForDocId(documentId).toPath()
+        return cn.nameCount > pn.nameCount && cn.startsWith(pn)
+    }
+
     private fun getChildMimeTypes(file: File?): String? {
-        return if (file!!.isDirectory) DocumentsContract.Document.MIME_TYPE_DIR else null
+        return if (file!!.isDirectory) DocumentsContract.Document.MIME_TYPE_DIR else MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(
+            file.toUri().toString()
+        ))
     }
 
     private fun getDocIdForFile(file: File?): String? {
@@ -195,7 +211,37 @@ class DecentralizedContentProvider : DocumentsProvider() {
         }
     }
 
-    override fun openDocument(documentId: String?, mode: String?, signal: CancellationSignal?): ParcelFileDescriptor {
-        TODO("Not yet implemented")
+    override fun openDocument(
+        documentId: String?,
+        mode: String?,
+        signal: CancellationSignal?
+    ): ParcelFileDescriptor {
+        Log.v(TAG, "openDocument, mode: $mode")
+        // It's OK to do network operations in this method to download the document,
+        // as long as you periodically check the CancellationSignal. If you have an
+        // extremely large file to transfer from the network, a better solution may
+        // be pipes or sockets (see ParcelFileDescriptor for helper methods).
+
+        val file: File = getFileForDocId(documentId)
+        val accessMode: Int = ParcelFileDescriptor.parseMode(mode)
+
+        val isWrite: Boolean = mode!!.contains("w")
+        return if (isWrite) {
+            val handler = Handler(context!!.mainLooper)
+            // Attach a close listener if the document is opened in write mode.
+            try {
+                ParcelFileDescriptor.open(file, accessMode, handler) {
+                    // Update the file with the cloud server. The client is done writing.
+                    Log.i(TAG, "A file with id $documentId has been closed! Time to update the server.")
+                }
+            } catch (e: IOException) {
+                throw FileNotFoundException(
+                    "Failed to open document with id $documentId and mode $mode"
+                )
+            }
+        } else {
+            ParcelFileDescriptor.open(file, accessMode)
+        }
     }
+
 }
